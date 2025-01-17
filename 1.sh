@@ -2,7 +2,11 @@
 # 适用于 Ubuntu 的设置脚本
 export INSTANCE_INDEX=${instance_index}
 export ENV_VAR=${env_var}
-
+# 设置 Go 环境变量
+export GOPATH=/root/go
+export GOROOT=/usr/local/go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+export HOME=/root
 echo "Starting the setup..."
 
 # 更新系统
@@ -116,9 +120,12 @@ sudo tar -C "$GO_INSTALL_DIR" -xzf "$GO_TAR_FILE"
 # 设置 Go 环境变量
 echo "Setting up Go environment..."
 
-echo "export PATH=\$PATH:/usr/local/go:$GOPATH/bin:$GOROOT/bin" >> /etc/profile
-echo "export GOPATH=$HOME/go" >> /etc/profile
+echo "export GOPATH=/root/go" >> /etc/profile
 echo "export GOROOT=/usr/local/go" >> /etc/profile
+echo "export PATH=\$PATH:/usr/local/go:/root/go/bin:/usr/local/go/bin" >> /etc/profile
+echo "export GOCACHE=$HOME/.cache/go-build" >> /etc/profile
+echo "export XDG_CACHE_HOME=$HOME/.cache" >> /etc/profile
+
 source /etc/profile
 
 
@@ -133,18 +140,21 @@ cd /data
 git clone --branch feature/3.0.1 https://github.com/treasurenetprotocol/treasurenet.git
 
 cd /data/treasurenet
-source /etc/profile
-
-sudo make install
+go env -w GO111MODULE=on
+go mod tidy
+make install
 
 ls $(go env GOPATH)/bin
 sudo cp $(go env GOPATH)/bin/treasurenetd /usr/bin
+#切换用户
 
-echo "node=$INSTANCE_INDEX" >.env
-chmod +x init_nodes.sh 
-chmod +x init_node_template.sh
-chmod +x node_config.json
-bash init_nodes.sh
+sudo chown -R ubuntu:ubuntu /data/
+sudo -E -u ubuntu bash -c 'echo "node=$INSTANCE_INDEX" > .env'
+sudo -u ubuntu chmod +x init_nodes.sh
+sudo -u ubuntu chmod +x init_node_template.sh
+sudo -u ubuntu chmod +x node_config.json
+sudo -u ubuntu bash init_nodes.sh
+
 
 
 
