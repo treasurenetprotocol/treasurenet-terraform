@@ -135,25 +135,26 @@ go version
 
 
 
-cd /data
+# cd /data
 
-git clone --branch feature/3.0.1 https://github.com/treasurenetprotocol/treasurenet.git
+# git clone --branch feature/3.0.1 https://github.com/treasurenetprotocol/treasurenet.git
 
-cd /data/treasurenet
-go env -w GO111MODULE=on
-go mod tidy
-make install
+# cd /data/treasurenet
+# go env -w GO111MODULE=on
+# go mod tidy
+# make install
 
-ls $(go env GOPATH)/bin
-sudo cp $(go env GOPATH)/bin/treasurenetd /usr/bin
-#切换用户
+# ls $(go env GOPATH)/bin
+# sudo cp $(go env GOPATH)/bin/treasurenetd /usr/bin
+# #切换用户
 
-sudo chown -R ubuntu:ubuntu /data/
-sudo -E -u ubuntu bash -c 'echo "node=$INSTANCE_INDEX" > .env'
-sudo -u ubuntu chmod +x init_nodes.sh
-sudo -u ubuntu chmod +x init_node_template.sh
-sudo -u ubuntu chmod +x node_config.json
-sudo -u ubuntu bash init_nodes.sh
+# sudo chown -R ubuntu:ubuntu /data/
+# sudo -E -u ubuntu bash -c 'echo "node=$INSTANCE_INDEX" > .env'
+# sudo -u ubuntu chmod +x init_nodes.sh
+# sudo -u ubuntu chmod +x init_node_template.sh
+# sudo -u ubuntu chmod +x node_config.json
+# sudo -u ubuntu bash init_nodes.sh
+
 
 
 
