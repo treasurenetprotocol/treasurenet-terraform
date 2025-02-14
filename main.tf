@@ -7,11 +7,17 @@ terraform {
   }
 }
 
+
+provider "aws" {
+  region = "us-west-1"
+}
 variable "cloudflare_api_token" {
   type = string
 }
-provider "aws" {
-  region = "us-west-1"
+
+# 定义数据库密码变量
+variable "db_password" {
+  type = string
 }
 
 provider "cloudflare" {
@@ -45,7 +51,7 @@ resource "aws_db_instance" "blockscout_db" {
   allocated_storage    = 200
   storage_type         = "gp3"
   username             = "postgres"
-  password             = "XX6uQmKRKwXNFzN1Ypid" # 替换为你的密码
+  password             = var.db_password # 使用变量中的密码
   parameter_group_name = "default.postgres12"
   skip_final_snapshot  = true
   publicly_accessible  = false
